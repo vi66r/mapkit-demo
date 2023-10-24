@@ -1,158 +1,198 @@
 import SwiftUI
-import MapKit
 
-// This component displays a search bar, a list of categories, and a map view.
-// The search bar allows users to search for locations.
-// The categories section displays a horizontal list of categories with icons.
-// The map view displays the selected region.
-// The colors have been updated to orange as per the user input.
+// This component is a clone of CashApp's profile page using SwiftUI.
+// It consists of a profile image, user information, navigation links, and a sign-out button.
+// The profile page can be accessed by tapping on a profile icon button.
 
-struct ContentView: View {
-    init(){
-        UITabBar.appearance().isTranslucent = false
-        UITabBar.appearance().barTintColor = UIColor(.orange)
-    }
-
+struct ProfileView: View {
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
-        TabView {
-            MapView()
-                .tabItem {
-                    Label("Explore", systemImage: "magnifyingglass")
+        GeometryReader { geometry in
+            VStack {
+                HStack{
+                    Spacer()
                 }
-            SampleView()
-                .tabItem {
-                    Label("Wishlists", systemImage: "suit.heart").environment(\.symbolVariants, .none)
-                }
-            SampleView()
-                .tabItem {
+            }
+            
+            // 1. Main ScrollView containing all the elements
+            ScrollView (showsIndicators: false) {
+                VStack(spacing:10){
                     
-                    Text("Trips")
-                    Image(systemName: "a.circle")
-                }
-            SampleView()
-                .tabItem {
-                    Label("Inbox", systemImage: "bubble.middle.bottom")
-                        .environment(\.symbolVariants, .none)
-                }
-            SampleView()
-                .tabItem {
-                    Label("Profile", systemImage: "person")
-                        .environment(\.symbolVariants, .none)
-                }
- 
-        }
-        .accentColor(.orange)
-    }
-}
-
-
-struct SampleView: View {
-    var body: some View {
-        Text("Sample View")
-            .font(.title)
-    }
-}
-
-struct MapView: View {
-    @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 40.7128, longitude: -74.0060),
-        span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
-    )
-    @State var searchClicked = false
-
-    var body: some View {
-        VStack {
-            // 1. Search bar
-            ZStack(alignment: .trailing) {
-                Button(action: {
-                    print("outer button pressed")
-                    searchClicked = true
-                }) {
+                    // 1.1. QRCode and Close Button
+                    HStack(spacing:310){
+                        Image(systemName: "qrcode")
+                            .font(.system(size:22, weight:.bold ))
+                            .foregroundColor(Color.black)
+                        Button(action:{
+                            presentationMode.wrappedValue.dismiss()
+                        }){ Image(systemName: "xmark")
+                                .font(.system(size:22, weight:.bold ))
+                                .foregroundColor(Color.black)}
+                    }
+                    .frame(width: geometry.size.width)
+                    
+                    Spacer()
+                    
+                    // 1.2. Profile Image
                     HStack {
-                        Spacer()
-                            .frame(width: 5.0)
-                        Image(systemName: "magnifyingglass")
-                        Spacer()
-                            .frame(width: 14.0)
-                        VStack(alignment: .leading){
-
-                            Text("Where to?").bold()
-                                .font(.system(size: 14))
-
-                            Text("Anywhere • Any week • Add guests")
-                                .fontWeight(.light)
-                                .foregroundColor(.gray)
-                                .font(.system(size: 12))
-
-                        }
-
-                        Spacer()
+                        Image(systemName: "camera.fill")
+                            .font(.system(size: 18))
+                            .foregroundColor(Color.white)
                     }
-                    .padding()
-                    .accentColor(.black)
-
-                    .clipShape(RoundedRectangle(cornerRadius: 14.0, style: .continuous))
-                    .background(
-                        RoundedRectangle(cornerRadius: 30.0)
-                            .fill(.white)
-
+                    .frame(width:50, height:50)
+                    .background(Color.green)
+                    .cornerRadius(25)
+                    .padding(5)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 50)
+                            .stroke(style:
+                                        StrokeStyle(lineWidth: 3, lineCap: .round ,dash: [7])
+                                   )
+                            .foregroundColor(Color.green)
                     )
-                    .shadow(color: .gray.opacity(0.4), radius: 6, x: 0, y: 0)
-
-                }
-                .frame(maxWidth: 350.0)
-                .padding()
-
-
-
-                Button(action: {}) {
-                    Circle()    .strokeBorder(Color.gray,lineWidth: 0.5)
-                        .foregroundColor(.white)
-                        .frame(width: 40.0, height: 40.0)
-                        .overlay(Image(systemName: "slider.horizontal.3"))
-                        .padding()
-                        .accentColor(Color.black)
-
-
-                        .clipShape(RoundedRectangle(cornerRadius: 30.0, style: .continuous))
-
-                }
-                .padding()
-            }
- 
-            // 2. Categories list
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 20) {
-                    ForEach(["Treehouses", "Countryside", "Castles", "Vinyards", "Mansions"], id: \.self) { title in
-                        Button(action: {}) {
-                            VStack {
-                                Image(systemName: "building.columns")
-                                    .foregroundColor(.black)
-                                    .font(.system(size: 25))
-                                Text(title)
-                                    .foregroundColor(Color(hue: 1.0, saturation: 0.0, brightness: 0.089))
-                                    .font(.system(size: 14))
+                    
+                    // 1.3. User Information
+                    Text("cash app")
+                        .fontWeight(.medium)
+                    Text("$cashapp")
+                        .fontWeight(.regular)
+                        .foregroundColor(Color(.systemGray2))
+                    
+                    // 1.4. Invite Friends Button
+                    HStack{
+                        Button(action:{
+                            withAnimation{
                             }
-                            .padding(.leading, 10.0)
+                        }){
+                            Text("Invite Friends, Get $15")
+                                .fontWeight(.medium)
+                                .frame(maxWidth:.infinity)
+                                .padding(.vertical, 15)
+                                .foregroundColor(Color.white)
                         }
+                        .background(Color.green)
+                        .cornerRadius(30, antialiased: true)
+                    }.padding()
+                    
+                    // 1.5. Joined Date Information
+                    HStack{
+                        Image(systemName: "calendar")
+                            .padding(.leading, 20)
+                            .font(.system(size: 18))
+                            .foregroundColor(Color.green)
+                        
+                        Text("Joined October 2023")
+                            .fontWeight(.medium)
+                            .padding(.leading, 10)
+                            .foregroundColor(Color(.black))
+                        
+                        Spacer()
+                        
                     }
+                    .frame(width:geometry.size.width)
+                    .padding()
+                    
+                    Divider()
+                    
+                    // 1.6. Navigation Links
+                    VStack{
+                        NavLink(title:"Personal", icon:"person.fill")
+                        NavLink(title:"Support", icon:"questionmark.circle.fill")
+                        NavLink(title:"Privacy & Security", icon:"checkmark.shield.fill")
+                        NavLink(title:"Notifications", icon:"moon.circle")
+                        NavLink(title:"Documents", icon:"doc.fill")
+                    }
+                    
+                    // 1.7. Sign Out Button and Footer Text
+                    VStack(alignment:.center){
+                        
+                        Button(action:{
+                            withAnimation{
+                                
+                            }
+                        }) {
+                            Text("Sign Out")
+                                .fontWeight(.medium)
+                                .frame(maxWidth:.infinity)
+                                .padding(.vertical, 20)
+                                .foregroundColor(Color.green)
+                        }
+                        .background(Color.white)
+                        .frame(width:geometry.size.width)
+                        
+                        Text("Sqaure, Inc.'s Privacy Policy, Terms of Service,\nand Open Source Software")
+                            .font(.system(size: 15))
+                            .multilineTextAlignment(.center)
+                            .padding(.top, 20)
+                            .foregroundColor(Color(.systemGray2))
+                    }
+                    .padding(.vertical, 50)
+                    .frame(width:geometry.size.width)
+                    .background(Color(.systemGray6))
                 }
-            }
-            .padding(.leading, 10)
-
-
-            // 3. Map view
-            ZStack(alignment: .bottom) {
-                Map(coordinateRegion: $region, showsUserLocation: false, userTrackingMode: .constant(.follow))
-                    .frame(width: 400, height: 500)
+                .frame(width:geometry.size.width)
             }
         }
-        .background(Color.white.shadow(color: Color(hue: 1.0, saturation: 0.0, brightness: 0.578), radius: 0.5, x: 0, y: 1))
+    }
+}
+
+// 2. Profile Icon Button
+struct ProfileIcon:View {
+    @State private var showProfileModal = false
+    
+    var body: some View {
+        
+        Button(action: {
+            withAnimation{
+                showProfileModal.toggle()
+            }
+        }) {
+            Image(systemName: "person.crop.circle")
+                .foregroundColor(Color(.black))
+                .font(.system(size: 30))
+        }
+        .fullScreenCover(isPresented:$showProfileModal, content: ProfileView.init)
+    }
+}
+
+// 3. NavLink Component
+struct NavLink: View {
+    var title:String
+    var icon : String
+    
+    var body: some View {
+        HStack{
+            Button(action:{
+                withAnimation{
+                    
+                }
+            }) {
+                HStack(alignment:.bottom){
+                    Image(systemName: icon)
+                        .padding(.leading, 5)
+                        .font(.system(size: 18))
+                        .foregroundColor(Color(.black))
+                    
+                    Text("\(title)")
+                        .font(.system(size: 18))
+                        .padding(.leading, 15)
+                        .foregroundColor(Color(.black))
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.system(size:15, weight:.bold))
+                        .foregroundColor(Color(.systemGray2))
+                }
+                .padding()
+            }
+        }
+        .padding(.vertical, 5)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ProfileView()
     }
 }
