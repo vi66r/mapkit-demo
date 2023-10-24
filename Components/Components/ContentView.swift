@@ -7,10 +7,12 @@ import MapKit
 // The map view displays the selected region.
 // The colors have been updated to orange as per the user input.
 
+// adding a comment to note some change to test the autocommit functionality...
+
 struct ContentView: View {
     init(){
         UITabBar.appearance().isTranslucent = false
-        UITabBar.appearance().barTintColor = UIColor(.orange)
+        UITabBar.appearance().barTintColor = UIColor(.purple)
     }
 
     var body: some View {
